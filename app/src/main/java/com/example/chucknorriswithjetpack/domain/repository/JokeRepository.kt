@@ -9,4 +9,5 @@ interface JokeRepository {
     suspend fun getRandomJoke(fetchFromRemote: Boolean): Flow<Resource<RandomJokeModel>>
     suspend fun getJokeCategories(): Flow<Resource<List<JokeCategories>>>
     suspend fun searchForJoke(queryParam: String): Flow<Resource<List<RandomJokeModel>>>
+    suspend fun getJokeFromCategory(category: String): Flow<Resource<RandomJokeModel>>
 }

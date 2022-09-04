@@ -14,6 +14,12 @@ class InfoDialog : DialogFragment() {
         yesListener = listener
     }
 
+    private var dismissListener: (() -> Unit)? = null
+
+    fun setDismissListener(listener: () -> Unit) {
+        dismissListener = listener
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle(arguments?.getString("title"))

@@ -3,6 +3,7 @@ package com.example.chucknorriswithjetpack.data.mappers
 import com.example.chucknorriswithjetpack.data.database.JokeCategoriesEntity
 import com.example.chucknorriswithjetpack.data.database.JokeEntity
 import com.example.chucknorriswithjetpack.data.remote.dto.JokeDto
+import com.example.chucknorriswithjetpack.data.remote.dto.RandomJokeFromCategoryDto
 import com.example.chucknorriswithjetpack.data.remote.dto.Result
 import com.example.chucknorriswithjetpack.domain.model.JokeCategories
 import com.example.chucknorriswithjetpack.domain.model.RandomJokeModel
@@ -57,6 +58,15 @@ fun JokeCategoriesEntity.toJokeCategory(): JokeCategories {
 }
 
 fun Result.toJokeModel(): RandomJokeModel {
+    return RandomJokeModel(
+        iconUrl = icon_url ?: "",
+        jokeId = id ?: "",
+        jokeUrl = url ?: "",
+        joke = value ?: "",
+    )
+}
+
+fun RandomJokeFromCategoryDto.toJokeModel(): RandomJokeModel {
     return RandomJokeModel(
         iconUrl = icon_url ?: "",
         jokeId = id ?: "",

@@ -1,6 +1,7 @@
 package com.example.chucknorriswithjetpack.data.remote
 
 import com.example.chucknorriswithjetpack.data.remote.dto.JokeDto
+import com.example.chucknorriswithjetpack.data.remote.dto.RandomJokeFromCategoryDto
 import com.example.chucknorriswithjetpack.data.remote.dto.SearchJoke
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -18,5 +19,10 @@ interface ApiService {
     suspend fun searchForJokes(
         @Query("query") query: String
     ): SearchJoke
+
+    @GET("random")
+    suspend fun getRandomJokeFromCategory(
+        @Query("category") query: String
+    ): RandomJokeFromCategoryDto
 
 }

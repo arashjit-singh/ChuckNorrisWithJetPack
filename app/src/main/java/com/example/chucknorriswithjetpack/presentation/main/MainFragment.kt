@@ -20,6 +20,7 @@ import com.example.chucknorriswithjetpack.presentation.dialog.UserSearchJokeList
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -34,7 +35,6 @@ class MainFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(layoutInflater, container, false)
-
         (activity as AppCompatActivity).supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(false)
             it.title = getString(R.string.app_name)
@@ -51,20 +51,18 @@ class MainFragment : Fragment(), View.OnClickListener {
                         when (jokeUiState) {
                             is JokeUiState.Success -> {
                                 binding.progressBar.isVisible = false
-                                context?.let {
-                                    InfoDialog().apply {
-                                        setYesListener {
-                                            isDialogVisible = false
-                                        }
-                                        val args = Bundle()
-                                        args.putString("title", "Random Joke")
-                                        args.putString("msg", jokeUiState.joke.joke)
-                                        arguments = args
-                                    }.show(
-                                        parentFragmentManager, InfoDialog.TAG
-                                    )
-                                    isDialogVisible = true
-                                }
+                                InfoDialog().apply {
+                                    setYesListener {
+                                        isDialogVisible = false
+                                    }
+                                    val args = Bundle()
+                                    args.putString("title", "Random Joke")
+                                    args.putString("msg", jokeUiState.joke.joke)
+                                    arguments = args
+                                }.show(
+                                    parentFragmentManager, InfoDialog.TAG
+                                )
+                                isDialogVisible = true
                             }
                             is JokeUiState.Error -> {
                                 binding.progressBar.isVisible = false
@@ -88,6 +86,8 @@ class MainFragment : Fragment(), View.OnClickListener {
         binding.buttonSearchJoke.setOnClickListener(this)
         binding.buttonCategories.setOnClickListener(this)
 
+        Timber.i("onCreateView")
+
         return binding.root
     }
 
@@ -100,8 +100,8 @@ class MainFragment : Fragment(), View.OnClickListener {
                 if (!isDialogVisible)
                     dialog.dismiss()
             }
-
         }
+        Timber.i("onViewCreated")
     }
 
     override fun onClick(p0: View?) {
@@ -110,7 +110,7 @@ class MainFragment : Fragment(), View.OnClickListener {
                 mainFragmentViewModel.getRandomJoke(true)
             }
             R.id.buttonSearchJoke -> {
-                val dialog = SearchJokeDialog().apply {
+                SearchJokeDialog().apply {
                     isCancelable = true
                     setSearchListener { searchText ->
                         UserSearchJokeListDialog().apply {
@@ -119,17 +119,15 @@ class MainFragment : Fragment(), View.OnClickListener {
                             arguments = args
                         }.show(parentFragmentManager, UserSearchJokeListDialog.TAG)
                     }
-                }
-                dialog.show(
+                }.show(
                     parentFragmentManager, SearchJokeDialog.TAG
                 )
 
             }
             R.id.buttonCategories -> {
-                val dialog = CategoryListDialog().apply {
+                CategoryListDialog().apply {
                     isCancelable = true
-                }
-                dialog.show(
+                }.show(
                     parentFragmentManager, CategoryListDialog.TAG
                 )
             }

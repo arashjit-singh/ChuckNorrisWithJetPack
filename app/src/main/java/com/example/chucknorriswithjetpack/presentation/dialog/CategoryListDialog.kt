@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chucknorriswithjetpack.databinding.DialogCategoryListBinding
+import com.example.chucknorriswithjetpack.domain.model.JokeCategories
 import com.example.chucknorriswithjetpack.presentation.adapter.CategoryListAdapter
 import com.example.chucknorriswithjetpack.presentation.main.JokeCategoryState
 import com.example.chucknorriswithjetpack.presentation.main.MainFragmentViewModel
@@ -66,8 +67,8 @@ class CategoryListDialog : DialogFragment() {
 
     private fun setAdapter() {
         val layoutManagerR = LinearLayoutManager(requireContext())
+        catListAdapter = CategoryListAdapter()
         binding.categoryRecyclerView.apply {
-            catListAdapter = CategoryListAdapter()
             adapter = catListAdapter
             layoutManager = layoutManagerR
             addItemDecoration(
@@ -76,6 +77,14 @@ class CategoryListDialog : DialogFragment() {
                     layoutManagerR.orientation
                 )
             )
+        }
+        catListAdapter.callback = object : CategoryListAdapter.ItemClick {
+            override fun onItemClick(jokeCategories: JokeCategories) {
+                lifecycleScope.launch {
+                    mainFragmentViewModel.getJokeFromCategory("animal")
+                }
+            }
+
         }
     }
 }

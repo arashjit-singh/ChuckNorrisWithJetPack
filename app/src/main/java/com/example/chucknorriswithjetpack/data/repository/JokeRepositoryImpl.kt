@@ -161,4 +161,31 @@ class JokeRepositoryImpl @Inject constructor(
 
         }
     }
+
+    override suspend fun getJokeFromCategory(category: String): Flow<Resource<RandomJokeModel>> {
+        return flow {
+            emit(Resource.Loading(true))
+            val jokeRandom = try {
+                api.getRandomJokeFromCategory(category)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                null
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Resource.Error("Couldn't load data"))
+                null
+            }
+
+            jokeRandom?.let { joke ->
+                val data = joke.toJokeModel()
+                emit(
+                    Resource.Success(
+                        data = data
+                    )
+                )
+                emit(Resource.Loading(false))
+            }
+        }
+    }
 }

@@ -82,6 +82,13 @@ class MainFragmentViewModel @Inject constructor(private val repository: JokeRepo
         }
     }
 
+    fun getJokeFromCategory(category: String) {
+        viewModelScope.launch {
+            repository.getJokeFromCategory(category).collect { jokeSearch ->
+            }
+        }
+    }
+
 }
 
 // Represents different states for the screen

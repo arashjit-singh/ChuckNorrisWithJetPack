@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chucknorriswithjetpack.databinding.ItemCategoryListBinding
 import com.example.chucknorriswithjetpack.domain.model.JokeCategories
+import timber.log.Timber
 
 class CategoryListAdapter : RecyclerView.Adapter<CategoryListAdapter.ViewHolder>() {
     private lateinit var binding: ItemCategoryListBinding
+    var callback: ItemClick? = null
 
     val diffCallback = object : DiffUtil.ItemCallback<JokeCategories>() {
 
@@ -44,10 +46,17 @@ class CategoryListAdapter : RecyclerView.Adapter<CategoryListAdapter.ViewHolder>
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.apply {
             binding.categoryNameTxtVw.text = differ.currentList.get(position).name
+            setOnClickListener {
+                callback?.onItemClick(differ.currentList.get(position))
+            }
         }
     }
 
     override fun getItemCount(): Int {
         return differ.currentList.size
+    }
+
+    interface ItemClick {
+        fun onItemClick(jokeCategories: JokeCategories)
     }
 }
