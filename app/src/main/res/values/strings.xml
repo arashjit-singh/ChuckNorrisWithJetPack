@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Chuck Norris</string>
+    <string name="versus">VS</string>
+    <string name="start">Start</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>
