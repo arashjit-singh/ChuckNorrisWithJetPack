@@ -5,7 +5,6 @@ import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber.DebugTree
 import timber.log.Timber.Forest
 
-
 @HiltAndroidApp
 class BaseApplication : Application() {
     override fun onCreate() {

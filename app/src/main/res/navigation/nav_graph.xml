@@ -11,21 +11,10 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_blankFragment_to_blankFragment2"
-            app:destination="@id/searchJokesFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
-    <fragment
-        android:id="@+id/searchJokesFragment"
-        android:name="com.example.chucknorriswithjetpack.presentation.main.SearchJokesFragment"
-        android:label="fragment_search_jokes"
-        tools:layout="@layout/fragment_search_jokes">
-        <argument
-            android:name="searchText"
-            android:defaultValue="null"
-            app:argType="string" />
-    </fragment>
 </navigation>

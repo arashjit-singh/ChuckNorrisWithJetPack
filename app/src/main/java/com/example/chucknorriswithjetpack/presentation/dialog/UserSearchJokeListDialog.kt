@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.chucknorriswithjetpack.R
 import com.example.chucknorriswithjetpack.databinding.DialogCategoryListBinding
 import com.example.chucknorriswithjetpack.presentation.adapter.JokeListAdapter
 import com.example.chucknorriswithjetpack.presentation.main.MainFragmentViewModel
@@ -26,9 +27,9 @@ class UserSearchJokeListDialog : DialogFragment() {
     }
 
     private val mainFragmentViewModel: MainFragmentViewModel by viewModels()
-    lateinit var binding: DialogCategoryListBinding
+    private lateinit var binding: DialogCategoryListBinding
     private lateinit var jokeListAdapter: JokeListAdapter
-    var searchText = ""
+    private var searchText = ""
 
     override fun onStart() {
         super.onStart()
@@ -66,7 +67,7 @@ class UserSearchJokeListDialog : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DialogCategoryListBinding.inflate(layoutInflater)
         setAdapter()
         lifecycleScope.launch {
@@ -74,8 +75,17 @@ class UserSearchJokeListDialog : DialogFragment() {
                 when (searchJoke) {
                     is SearchJokeState.Success -> {
                         val jokes = searchJoke.joke
-                        jokes?.let {
-                            jokeListAdapter.submitList(it)
+                        jokes.let {
+                            if (it.isNotEmpty())
+                                jokeListAdapter.submitList(it)
+                            else {
+                                Snackbar.make(
+                                    requireActivity().findViewById(R.id.rootView),
+                                    "No Joke found for $searchText",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                                dismiss()
+                            }
                         }
                     }
                     is SearchJokeState.Error -> {
@@ -89,7 +99,6 @@ class UserSearchJokeListDialog : DialogFragment() {
                     is SearchJokeState.Loading -> {
                         binding.progressBar.isVisible = true
                     }
-                    is SearchJokeState.Empty -> Unit
                 }
 
             }

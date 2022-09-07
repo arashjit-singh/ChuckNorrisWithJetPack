@@ -6,7 +6,7 @@ class ProvideDummyJokeModel {
 
     companion object {
         fun getDummyModel() =
-            RandomJokeModel("", "", "", "")
+            RandomJokeModel("", "1", "http", "RandomJoke")
     }
 
 }

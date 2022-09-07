@@ -100,7 +100,11 @@ class JokeRepositoryImpl @Inject constructor(
 
                 jokeCategories?.let { response ->
 
-                    val listCat = response.trim()
+                    val st1 = response.trim().replace("\"", "")
+                    val st2 = st1.replace("[", "")
+                    val st3 = st2.replace("]", "")
+
+                    val listCat = st3.trim().replace("\"", "")
                         .splitToSequence(',').filter {
                             it.isNotEmpty()
                         }.map {

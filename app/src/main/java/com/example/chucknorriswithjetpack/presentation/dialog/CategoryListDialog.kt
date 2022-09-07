@@ -13,8 +13,11 @@ import com.example.chucknorriswithjetpack.databinding.DialogCategoryListBinding
 import com.example.chucknorriswithjetpack.domain.model.JokeCategories
 import com.example.chucknorriswithjetpack.presentation.adapter.CategoryListAdapter
 import com.example.chucknorriswithjetpack.presentation.main.JokeCategoryState
+import com.example.chucknorriswithjetpack.presentation.main.JokeUiState
 import com.example.chucknorriswithjetpack.presentation.main.MainFragmentViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -23,6 +26,12 @@ class CategoryListDialog : DialogFragment() {
     private val mainFragmentViewModel: MainFragmentViewModel by viewModels()
     lateinit var binding: DialogCategoryListBinding
     private lateinit var catListAdapter: CategoryListAdapter
+
+    private var categoryListener: ((text: String) -> Unit)? = null
+
+    fun setCategoryListener(listener: (text: String) -> Unit) {
+        categoryListener = listener
+    }
 
     companion object {
         const val TAG = "CategoryListDialog"
@@ -48,7 +57,6 @@ class CategoryListDialog : DialogFragment() {
         lifecycleScope.launch {
             mainFragmentViewModel.jokeCategories.collect { jokeCategory ->
                 when (jokeCategory) {
-                    JokeCategoryState.Empty -> Unit
                     is JokeCategoryState.Error -> Unit
                     JokeCategoryState.Loading -> Unit
                     is JokeCategoryState.Success -> {
@@ -63,7 +71,6 @@ class CategoryListDialog : DialogFragment() {
         mainFragmentViewModel.getJokeCategories()
         return binding.root
     }
-
 
     private fun setAdapter() {
         val layoutManagerR = LinearLayoutManager(requireContext())
@@ -81,7 +88,26 @@ class CategoryListDialog : DialogFragment() {
         catListAdapter.callback = object : CategoryListAdapter.ItemClick {
             override fun onItemClick(jokeCategories: JokeCategories) {
                 lifecycleScope.launch {
-                    mainFragmentViewModel.getJokeFromCategory("animal")
+                    mainFragmentViewModel.getJokeFromCategory(jokeCategories.name)
+                    mainFragmentViewModel.randomJoke.collect { jokeUiState ->
+                        when (jokeUiState) {
+                            is JokeUiState.Error -> Snackbar.make(
+                                binding.root,
+                                "An error occurred",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            JokeUiState.Loading -> Unit
+                            is JokeUiState.Success -> {
+                                categoryListener?.let { category ->
+                                    category(jokeUiState.joke.joke)
+                                    delay(500)
+                                    dismiss()
+
+                                }
+                            }
+                        }
+
+                    }
                 }
             }
 

@@ -75,10 +75,8 @@ class MainFragment : Fragment(), View.OnClickListener {
                             is JokeUiState.Loading -> {
                                 binding.progressBar.isVisible = true
                             }
-                            is JokeUiState.Empty -> Unit
                         }
                     }
-
                 }
             }
         }
@@ -87,22 +85,21 @@ class MainFragment : Fragment(), View.OnClickListener {
         binding.buttonCategories.setOnClickListener(this)
 
         Timber.i("onCreateView")
-
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             val infoDialog = parentFragmentManager.findFragmentByTag(InfoDialog.TAG)
             infoDialog?.let {
                 val dialog = it as InfoDialog
-                if (!isDialogVisible)
-                    dialog.dismiss()
+                *//* if (!isDialogVisible)
+                     dialog.dismiss()*//*
             }
         }
         Timber.i("onViewCreated")
-    }
+    }*/
 
     override fun onClick(p0: View?) {
         when (p0!!.id) {
@@ -127,6 +124,20 @@ class MainFragment : Fragment(), View.OnClickListener {
             R.id.buttonCategories -> {
                 CategoryListDialog().apply {
                     isCancelable = true
+                    setCategoryListener { joke ->
+                        Timber.i("$joke")
+                        InfoDialog().apply {
+                            setYesListener {
+                                isDialogVisible = false
+                            }
+                            val args = Bundle()
+                            args.putString("title", "Random Joke")
+                            args.putString("msg", joke)
+                            arguments = args
+                        }.show(
+                            parentFragmentManager, InfoDialog.TAG
+                        )
+                    }
                 }.show(
                     parentFragmentManager, CategoryListDialog.TAG
                 )
